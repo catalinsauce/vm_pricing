@@ -163,5 +163,5 @@ actual_vs_expected_true["mean_vs_vm_price"] = (
     actual_vs_expected_true["mean"] / actual_vs_expected_true["vm_price_annual"]
 )
 
-# st.subheader("Actual ARR vs Expected ARR by ccy_bins when VM ARR < Total ARR: ")
-# st.write(actual_vs_expected_true)
+st.subheader("Actual ARR vs Expected ARR by ccy_bins when VM ARR < Total ARR: ")
+st.write(actual_vs_expected_true)
