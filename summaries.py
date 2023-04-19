@@ -3,6 +3,8 @@ import altair as alt
 
 
 st.set_page_config(layout="wide")
+base = "light"
+
 
 import streamlit_pandas as sp
 
@@ -46,30 +48,11 @@ create_data = {"arr_ind": "multiselect"}
 
 
 # Create All Widgets for Streamlit
-all_widgets = sp.create_widgets(arr.head(100), create_data)
-res = sp.filter_df(arr.head(100), all_widgets)
+all_widgets = sp.create_widgets(arr[["org_name", "org_uuid", "arr_ind"]], create_data)
+res = sp.filter_df(arr, all_widgets)
 
 st.title("Current Enterprise ARR to be used in Pricing")
 st.write(res)
-
-# sort the DataFrame by the Category column in ascending order
-arr_sorted = arr.sort_values("vm_ccy_total")
-
-
-# create a boxplot using altair
-st.subheader("ARR per VM by ccy_bins: ")
-chart = (
-    alt.Chart(arr_sorted)
-    .mark_boxplot()
-    .encode(
-        x=alt.X("ccy_bins:N", sort=alt.EncodingSortField("vm_ccy_total")),
-        y="arr_per_vm:Q",
-    )
-)
-
-# display the chart in Streamlit
-st.altair_chart(chart, use_container_width=True)
-
 
 # Show summary between actual and exected
 st.subheader("Actual ARR vs Expected ARR by ccy_bins: ")
@@ -86,10 +69,32 @@ st.write(
     """
 )
 
+
+# sort the DataFrame by the Category column in ascending order
+arr_sorted = arr.sort_values(by=["vm_ccy_total"], ascending=True)
+
+# create a boxplot using altair
+st.subheader("ARR per VM by ccy_bins: ")
+chart = (
+    alt.Chart(arr_sorted)
+    .mark_boxplot()
+    .encode(
+        x=alt.X("ccy_bins:N", sort=alt.EncodingSortField("ccy_bins")),
+        y="arr_per_vm:Q",
+    )
+)
+
+# display the chart in Streamlit
+st.altair_chart(chart, use_container_width=True)
+
+# Takeaways
+st.subheader("Takeaways: ")
+
 st.write(
     """
 - The box plot reveals the presence of numerous outliers. Should these data points be interpreted as anomalies or as legitimate deviations from the median?
     - Certain data points appear to be errors, as they indicate that the total ARR for VM exceeds the combined total ARR for both VM and RDC. Logically, this discrepancy should not occur.
+- Next step: remove records with VM ARR larger than Total ARR 
     """
 )
 
@@ -99,12 +104,15 @@ arr_ind_false = arr[arr["arr_ind"] == False].sort_values(
 )
 
 arr_ind_true = arr[arr["arr_ind"] == True].sort_values(
-    by=["arr_per_vm"], ascending=False
+    by=["vm_ccy_total"], ascending=True
 )
 
+print(arr_ind_true)
 
 # Comments for the filtered data
-st.subheader("Clients with VM ARR > Total ARR:")
+st.subheader(
+    "Clients with VM ARR > Total ARR (these records should be fixed):",
+)
 st.write(arr_ind_false)
 
 st.write(
@@ -125,13 +133,25 @@ chart_ind_true = (
     alt.Chart(arr_ind_true)
     .mark_boxplot()
     .encode(
-        x=alt.X("ccy_bins:N", sort=alt.EncodingSortField("vm_ccy_total")),
+        x=alt.X("ccy_bins:N", sort=alt.EncodingSortField("ccy_bins")),
         y="arr_per_vm:Q",
     )
 )
 
 # display the chart in Streamlit
 st.altair_chart(chart_ind_true, use_container_width=True, theme="streamlit")
+
+# Takeaways
+st.subheader("Takeaways: ")
+
+st.write(
+    """
+- Once we remove these records, the box plot shows a downward trend in arr_per_vm as ccy count increases. 
+- ccy_bin 1:9 and 10:24 still shows a few outliers with maximum arr_per_vm values approaching 5000 and minimum values as low as 500.
+    - These records should be double checked to ensure their accuracy.
+    """
+)
+
 
 # Summarize arr by ccy_bins when arr_ind = True
 actual_vs_expected_true = (
@@ -157,3 +177,15 @@ actual_vs_expected_true["mean_vs_vm_price"] = (
 
 st.subheader("Actual ARR vs Expected ARR by ccy_bins when VM ARR < Total ARR: ")
 st.write(actual_vs_expected_true)
+
+# Takeaways
+st.subheader("Takeaways: ")
+
+st.write(
+    """
+- After removing the inaccurate data, we observe the following changes:
+    - The actual median ARR in all ccy_bins is lower than the expected arr, confirming that enterprise clients receive discounts.
+    - In ccy_bin 1-9, the actual median ARR is 23% lower than the expected arr, which is still a substantial percentage considering the limited number of VMs in this bin.
+    - In ccy_bin 25-49, the actual median ARR is 18% lower than the expected arr.
+    """
+)
