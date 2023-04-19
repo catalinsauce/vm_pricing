@@ -9,7 +9,8 @@ import streamlit_pandas as sp
 # import configparser
 # import os
 # import snowflake.connector
-# import pandas as pd
+import pandas as pd
+
 # import matplotlib.pyplot as plt
 import numpy as np
 
