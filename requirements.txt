@@ -5,7 +5,7 @@ aiosignal==1.3.1
 altair==4.2.2
 # anyio @ file:///opt/concourse/worker/volumes/live/fdfc134d-03e4-4e6b-4eab-c131ac108813/volume/anyio_1644481717647/work/dist
 appdirs==1.4.4
-appnope @ file:///opt/concourse/worker/volumes/live/5f13e5b3-5355-4541-5fc3-f08850c73cf9/volume/appnope_1606859448618/work
+# appnope @ file:///opt/concourse/worker/volumes/live/5f13e5b3-5355-4541-5fc3-f08850c73cf9/volume/appnope_1606859448618/work
 argon2-cffi @ file:///opt/conda/conda-bld/argon2-cffi_1645000214183/work
 argon2-cffi-bindings @ file:///opt/concourse/worker/volumes/live/0628405f-5e68-4591-7d86-fffe9a78a449/volume/argon2-cffi-bindings_1644569695448/work
 asn1crypto @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_df35a2a4-e7a8-49c6-ace6-edff7129cef9u6px56sz/croots/recipe/asn1crypto_1652362655696/work
