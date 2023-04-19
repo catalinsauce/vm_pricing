@@ -27,17 +27,6 @@ pd.set_option("display.width", 1000)
 
 ###############################
 
-# config = configparser.ConfigParser()
-# config.read("config.ini")
-
-# # Get the current working directory
-# cwd = os.getcwd()
-
-# Print the current working directory
-# print("Current working directory:", cwd)
-
-# Import Data
-
 
 @st.cache_data
 def load_csv(csv_name):
