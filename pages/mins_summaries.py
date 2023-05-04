@@ -223,73 +223,73 @@ st.altair_chart(grid)
 # )
 
 
-st.subheader("Enterprise CCY distribution in terms of percentages")
+# st.subheader("Enterprise CCY distribution in terms of percentages")
 
-# Create histograms representing distribution of minutes by resources
+# # Create histograms representing distribution of minutes by resources
 
-ccy_win = ccy_usage_true[["ccy_pc_perc"]]
-ccy_mac = ccy_usage_true[["ccy_mac_perc"]]
-ccy_android = ccy_usage_true[["ccy_android_perc"]]
-ccy_ios = ccy_usage_true[["ccy_ios_perc"]]
+# ccy_win = ccy_usage_true[["ccy_pc_perc"]]
+# ccy_mac = ccy_usage_true[["ccy_mac_perc"]]
+# ccy_android = ccy_usage_true[["ccy_android_perc"]]
+# ccy_ios = ccy_usage_true[["ccy_ios_perc"]]
 
-chart1_ccy = (
-    alt.Chart(ccy_win)
-    .mark_bar()
-    .encode(
-        x=alt.X("ccy_pc_perc:Q", bin=True),
-        y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
-    )
-    .properties(width=500, height=350, title="Distribution of Annual Windows CCY % ")
-)
-
-
-chart2_ccy = (
-    alt.Chart(ccy_mac)
-    .mark_bar()
-    .encode(
-        x=alt.X("ccy_mac_perc:Q", bin=True),
-        y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
-    )
-    .properties(width=500, height=350, title="Distribution of Annual % Mac Minutes")
-)
-
-chart3_ccy = (
-    alt.Chart(ccy_android)
-    .mark_bar()
-    .encode(
-        x=alt.X("ccy_android_perc:Q", bin=True),
-        y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
-    )
-    .properties(width=500, height=350, title="Distribution of Annual % Android Minutes")
-)
-
-chart4_ccy = (
-    alt.Chart(ccy_ios)
-    .mark_bar()
-    .encode(
-        x=alt.X("ccy_ios_perc:Q", bin=True),
-        y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
-    )
-    .properties(width=500, height=350, title="Distribution of Annual % iOS Minutes")
-)
-
-# combine the four charts into a grid
-grid_ccy = alt.vconcat(
-    alt.hconcat(chart1_ccy, chart2_ccy, spacing=200),
-    alt.hconcat(chart3_ccy, chart4_ccy, spacing=200),
-).resolve_scale(y="independent")
-
-# display the grid
-st.altair_chart(grid_ccy)
+# chart1_ccy = (
+#     alt.Chart(ccy_win)
+#     .mark_bar()
+#     .encode(
+#         x=alt.X("ccy_pc_perc:Q", bin=True),
+#         y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
+#     )
+#     .properties(width=500, height=350, title="Distribution of Annual Windows CCY % ")
+# )
 
 
-# Takeaways
-st.subheader("Takeaways: ")
+# chart2_ccy = (
+#     alt.Chart(ccy_mac)
+#     .mark_bar()
+#     .encode(
+#         x=alt.X("ccy_mac_perc:Q", bin=True),
+#         y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
+#     )
+#     .properties(width=500, height=350, title="Distribution of Annual % Mac Minutes")
+# )
 
-st.write(
-    """
-- The summary above illustrates the resource usage of enterprise clients in their testing activities:
-    - Among the top 50% of clients, 71% of their testing occurs on Windows, 7% on Mac, 1% on Android, and 0% on iOS.
-    - Among the top 90% of clients, 100% of their testing occurs on Windows, 64% on Mac, 34% on Android, and 30% on iOS.
-    """
-)
+# chart3_ccy = (
+#     alt.Chart(ccy_android)
+#     .mark_bar()
+#     .encode(
+#         x=alt.X("ccy_android_perc:Q", bin=True),
+#         y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
+#     )
+#     .properties(width=500, height=350, title="Distribution of Annual % Android Minutes")
+# )
+
+# chart4_ccy = (
+#     alt.Chart(ccy_ios)
+#     .mark_bar()
+#     .encode(
+#         x=alt.X("ccy_ios_perc:Q", bin=True),
+#         y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
+#     )
+#     .properties(width=500, height=350, title="Distribution of Annual % iOS Minutes")
+# )
+
+# # combine the four charts into a grid
+# grid_ccy = alt.vconcat(
+#     alt.hconcat(chart1_ccy, chart2_ccy, spacing=200),
+#     alt.hconcat(chart3_ccy, chart4_ccy, spacing=200),
+# ).resolve_scale(y="independent")
+
+# # display the grid
+# st.altair_chart(grid_ccy)
+
+
+# # Takeaways
+# st.subheader("Takeaways: ")
+
+# st.write(
+#     """
+# - The summary above illustrates the resource usage of enterprise clients in their testing activities:
+#     - Among the top 50% of clients, 71% of their testing occurs on Windows, 7% on Mac, 1% on Android, and 0% on iOS.
+#     - Among the top 90% of clients, 100% of their testing occurs on Windows, 64% on Mac, 34% on Android, and 30% on iOS.
+#     """
+# )
