@@ -65,11 +65,10 @@ st.write(arr_usage_true_filter)
 st.write("")
 st.write("")
 
-st.subheader("Enterprise minutes distribution")
 
 st.markdown(
     """
-    <h2 style="text-align: center;">Enterprise minutes distribution: v1</h2>
+    <h2 style="text-align: center;">Enterprise minutes distribution</h2>
     """,
     unsafe_allow_html=True,
 )
@@ -177,7 +176,14 @@ st.altair_chart(grid_mins)
 st.write("")
 st.write("")
 
-st.subheader("Enterprise minutes distribution in terms of percentages")
+# st.subheader("Enterprise minutes distribution in terms of percentages")
+
+st.markdown(
+    """
+    <h2 style="text-align: center;">Enterprise minutes distribution in terms of percentages</h2>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 # Create histograms representing distribution of minutes by resources
