@@ -39,6 +39,10 @@ arr_usage_true_filter = arr_usage_true[
         "current_vm_arr_total",
         "vm_ccy_total",
         "ccy_bins",
+        "mins_win",
+        "mins_mac",
+        "mins_android",
+        "mins_ios",
         "mins_win_perc",
         "mins_mac_perc",
         "mins_android_perc",
@@ -57,92 +61,116 @@ st.title("Current Enterprise VM Usage to be used in Pricing")
 st.write(arr_usage_true_filter)
 
 
-# print(arr_usage_true.head())
+# Add some space between the subheader and the chart
+st.write("")
+st.write("")
+
+st.subheader("Enterprise minutes distribution")
 
 
-# usage_distribution = (
-#     arr_usage_true[
-#         [
-#             "mins_win_perc",
-#             "mins_mac_perc",
-#             "mins_android_perc",
-#             "mins_ios_perc",
-#             "win_arr",
-#             "mac_arr",
-#             "android_arr",
-#             "ios_arr",
-#             "current_vm_arr_total",
-#         ]
-#     ]
-#     .describe([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
-#     .round(2)
-# ).reset_index()
+# Handle NaN values in 'mins_win' column
+arr_usage_true_filter["mins_win"].fillna(0, inplace=True)
+arr_usage_true_filter["mins_mac"].fillna(0, inplace=True)
+arr_usage_true_filter["mins_android"].fillna(0, inplace=True)
+arr_usage_true_filter["mins_ios"].fillna(0, inplace=True)
 
 
-# df_cumulative_usage = usage_distribution.iloc[:, :5][3:]
-# df_cumulative_usage = df_cumulative_usage.rename(
-#     columns={"index": "percentiles"}
-# ).reset_index()
+# Define bins and labels for minutes
+bins = [0, 50000, 100000, 500000, 1000000, np.inf]
+labels = ["1:0-50k", "2:50k-100k", "3:100k-500k", "4:500k-1M", "5:1M+"]
 
+# Assign bins for minutes
+arr_usage_true_filter["binned_mins_win"] = pd.cut(
+    arr_usage_true_filter["mins_win"], bins=bins, labels=labels
+)
+
+arr_usage_true_filter["binned_mins_mac"] = pd.cut(
+    arr_usage_true_filter["mins_mac"], bins=bins, labels=labels
+)
+
+arr_usage_true_filter["binned_mins_android"] = pd.cut(
+    arr_usage_true_filter["mins_android"], bins=bins, labels=labels
+)
+
+arr_usage_true_filter["binned_mins_ios"] = pd.cut(
+    arr_usage_true_filter["mins_ios"], bins=bins, labels=labels
+)
+
+# Create Altair chart
+y_minutes_minimum = 400
+
+binned_mins_win = (
+    alt.Chart(arr_usage_true_filter)
+    .mark_bar()
+    .encode(
+        alt.X(
+            "binned_mins_win:N",
+            title="Windows Minutes Bins",
+            axis=alt.Axis(labelAngle=0),
+        ),
+        alt.Y("count()", title="Count", scale=alt.Scale(domain=[0, y_minutes_minimum])),
+    )
+    .properties(title="Distribution of Binned Windows Minutes", width=500, height=350)
+)
+
+binned_mins_mac = (
+    alt.Chart(arr_usage_true_filter)
+    .mark_bar()
+    .encode(
+        alt.X(
+            "binned_mins_mac:N",
+            title="Mac Minutes Bins",
+            axis=alt.Axis(labelAngle=0),
+        ),
+        alt.Y("count()", title="Count", scale=alt.Scale(domain=[0, y_minutes_minimum])),
+    )
+    .properties(title="Distribution of Binned Windows Minutes", width=500, height=350)
+)
+
+binned_mins_android = (
+    alt.Chart(arr_usage_true_filter)
+    .mark_bar()
+    .encode(
+        alt.X(
+            "binned_mins_android:N",
+            title="Android Minutes Bins",
+            axis=alt.Axis(labelAngle=0),
+        ),
+        alt.Y("count()", title="Count", scale=alt.Scale(domain=[0, y_minutes_minimum])),
+    )
+    .properties(title="Distribution of Binned Android Minutes", width=500, height=350)
+)
+
+binned_mins_ios = (
+    alt.Chart(arr_usage_true_filter)
+    .mark_bar()
+    .encode(
+        alt.X(
+            "binned_mins_ios:N",
+            title="iOS Minutes Bins",
+            axis=alt.Axis(labelAngle=0),
+        ),
+        alt.Y("count()", title="Count", scale=alt.Scale(domain=[0, y_minutes_minimum])),
+    )
+    .properties(title="Distribution of Binned iOS Minutes", width=500, height=350)
+)
+
+
+# combine the four charts into a grid
+grid_mins = alt.vconcat(
+    alt.hconcat(binned_mins_win, binned_mins_mac, spacing=200),
+    alt.hconcat(binned_mins_android, binned_mins_ios, spacing=200),
+).resolve_scale(y="independent")
+
+# display the grid
+st.altair_chart(grid_mins)
+
+
+# Add some space between the subheader and the chart
+st.write("")
+st.write("")
 
 st.subheader("Enterprise minutes distribution in terms of percentages")
-
-
-# df_cumulative_arr = usage_distribution[
-#     ["index", "win_arr", "mac_arr", "android_arr", "ios_arr"]
-# ][3:]
-# df_cumulative_arr = df_cumulative_arr.rename(columns={"index": "percentiles"})
-
-# print(df_cumulative_arr)
-
-# # plot the cumulative sums for each field
-# ax = df_cumulative_usage.plot(kind="line", figsize=(10, 6))
-# ax.set_xlabel("percentiles")
-# ax.set_ylabel("Cumulative Usage %")
-# plt.title("Cumulative Usage of Win, Mac, Android, iOS")
-# plt.show()
-
-# # plot the cumulative sums for each field
-# ax = df_cumulative_arr.plot(kind="line", figsize=(10, 6))
-# ax.set_xlabel("percentiles")
-# ax.set_ylabel("Cumulative ARR $")
-# plt.title("Cumulative ARR for Win, Mac, Android, iOS")
-# plt.show()
-
-# df_cumulative_usage_filter_1 = df_cumulative_usage[
-#     ["index", "win_arr", "mac_arr", "android_arr", "ios_arr"]
-# ]
-
-
-# df_cumulative_usage_streamlit = df_cumulative_usage[
-#     ["index", "win_arr", "mac_arr", "android_arr", "ios_arr"]
-# ].melt(id_vars="index", var_name="vm_type", value_name="Value")
-
-# df_cumulative_usage = df_cumulative_usage.rename(columns={"index": "percentile_index"})
-# df_cumulative_usage_streamlit = df_cumulative_usage[
-#     [
-#         "percentiles",
-#         "mins_win_perc",
-#         "mins_mac_perc",
-#         "mins_android_perc",
-#         "mins_ios_perc",
-#     ]
-# ]
-
-# df_cumulative_usage_streamlit = df_cumulative_usage_streamlit.melt(
-#     id_vars="percentiles", var_name="vm_type", value_name="Value"
-# )
-
-# print(df_cumulative_usage_streamlit)
-
-# print(df_cumulative_usage_streamlit)
-# df_cumulative_usage_streamlit["Value"] = df_cumulative_usage_streamlit["Value"].astype(
-#     float
-# )
-# print(df_cumulative_usage_streamlit.dtypes)
-
-
-# print()
 
 
 # Create histograms representing distribution of minutes by resources
@@ -152,13 +180,18 @@ mins_mac = arr_usage_true[["mins_mac_perc"]]
 mins_android = arr_usage_true[["mins_android_perc"]]
 mins_ios = arr_usage_true[["mins_ios_perc"]]
 
+y_minutes_perc_minimum = 500
 
 chart1 = (
     alt.Chart(mins_win)
     .mark_bar()
     .encode(
         x=alt.X("mins_win_perc:Q", bin=True),
-        y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
+        y=alt.Y(
+            "count()",
+            axis=alt.Axis(title="Orgs Count"),
+            scale=alt.Scale(domain=[0, y_minutes_perc_minimum]),
+        ),
     )
     .properties(width=500, height=350, title="Distribution of Annual % Windows Minutes")
 )
@@ -169,7 +202,11 @@ chart2 = (
     .mark_bar()
     .encode(
         x=alt.X("mins_mac_perc:Q", bin=True),
-        y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
+        y=alt.Y(
+            "count()",
+            axis=alt.Axis(title="Orgs Count"),
+            scale=alt.Scale(domain=[0, y_minutes_perc_minimum]),
+        ),
     )
     .properties(width=500, height=350, title="Distribution of Annual % Mac Minutes")
 )
@@ -179,7 +216,11 @@ chart3 = (
     .mark_bar()
     .encode(
         x=alt.X("mins_android_perc:Q", bin=True),
-        y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
+        y=alt.Y(
+            "count()",
+            axis=alt.Axis(title="Orgs Count"),
+            scale=alt.Scale(domain=[0, y_minutes_perc_minimum]),
+        ),
     )
     .properties(width=500, height=350, title="Distribution of Annual % Android Minutes")
 )
@@ -189,7 +230,11 @@ chart4 = (
     .mark_bar()
     .encode(
         x=alt.X("mins_ios_perc:Q", bin=True),
-        y=alt.Y("count()", axis=alt.Axis(title="Orgs Count")),
+        y=alt.Y(
+            "count()",
+            axis=alt.Axis(title="Orgs Count"),
+            scale=alt.Scale(domain=[0, y_minutes_perc_minimum]),
+        ),
     )
     .properties(width=500, height=350, title="Distribution of Annual % iOS Minutes")
 )
