@@ -67,6 +67,13 @@ st.write("")
 
 st.subheader("Enterprise minutes distribution")
 
+st.markdown(
+    """
+    <h2 style="text-align: center;">Enterprise minutes distribution: v1</h2>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 # Handle NaN values in 'mins_win' column
 arr_usage_true_filter["mins_win"].fillna(0, inplace=True)
